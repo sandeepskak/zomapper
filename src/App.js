@@ -22,16 +22,48 @@ class App extends Component {
       center: {lat: latitude, lng: longitude},
       zoom: 16
     });
+    this.map = map;
     this.renderMarker(map, latitude, longitude);
   }
 
   renderMarker = (map, latitude, longitude) => {
     console.log(map, latitude, longitude);
     let markerPosition = {lat: latitude, lng: longitude};
-    let marker = new window.google.maps.Marker({
+    new window.google.maps.Marker({
       position: markerPosition,
       map: map
     });
+    this.fetchNearbyRestaurants(latitude, longitude);
+  }
+
+  fetchNearbyRestaurants = (latitude, longitude) => {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('user-key', 'bd751ce2eb11366569e9f266ffea7153');
+    let options = {
+      method: 'GET',
+      headers: headers
+    };
+    let url = "https://developers.zomato.com/api/v2.1/geocode?lat=" + latitude + "&lon=" + longitude;
+    window.fetch(url, options)
+    .then(response => response.json())
+    .then(data => {
+      this.extractLocations(data.nearby_restaurants);
+    })
+  }
+
+  extractLocations = (restaurants) => {
+    this.listOfLocations = [];
+    for(let restaurant of restaurants) {
+      this.listOfLocations.push(restaurant.restaurant.location);
+    }
+    this.renderNearbyRestaurants(this.listOfLocations);
+  }
+
+  renderNearbyRestaurants = (locations) => {
+    for(let location of locations) {
+      this.renderMarker(this.map, parseFloat(location.latitude), parseFloat(location.longitude));
+    }
   }
 
   render() {
