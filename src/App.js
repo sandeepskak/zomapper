@@ -7,15 +7,24 @@ class App extends Component {
     navigator.geolocation.getCurrentPosition(this.geolocationSuccess, this.geolocationError);
   }
 
-  geolocationSuccess(position) {
-    var latitude  = position.coords.latitude;
-    var longitude = position.coords.longitude;
-    var map = new window.google.maps.Map(document.getElementById('map'), {
+  geolocationSuccess = (position) => {
+    let latitude  = position.coords.latitude;
+    let longitude = position.coords.longitude;
+    this.renderMap(latitude, longitude);
+  }
+
+  renderMap = (latitude, longitude) => {
+    let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: latitude, lng: longitude},
       zoom: 16
     });
-    var markerPosition = {lat: latitude, lng: longitude};
-    var marker = new window.google.maps.Marker({
+    this.renderMarker(map, latitude, longitude);
+  }
+
+  renderMarker = (map, latitude, longitude) => {
+    console.log(map, latitude, longitude);
+    let markerPosition = {lat: latitude, lng: longitude};
+    let marker = new window.google.maps.Marker({
       position: markerPosition,
       map: map
     });
