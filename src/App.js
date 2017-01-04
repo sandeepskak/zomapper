@@ -13,6 +13,10 @@ class App extends Component {
     this.renderMap(latitude, longitude);
   }
 
+  geolocationError() {
+    console.log('Unable to retrieve location');
+  }
+
   renderMap = (latitude, longitude) => {
     let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: latitude, lng: longitude},
@@ -28,10 +32,6 @@ class App extends Component {
       position: markerPosition,
       map: map
     });
-  }
-
-  geolocationError() {
-    console.log('Unable to retrieve location');
   }
 
   render() {
