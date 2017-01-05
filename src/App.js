@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import restaurantIcon from './restaurant.png';
 
 class App extends Component {
   componentDidMount() {
@@ -11,7 +12,7 @@ class App extends Component {
     let latitude  = position.coords.latitude;
     let longitude = position.coords.longitude;
     this.renderMap(latitude, longitude);
-    this.renderMarker(this.map, latitude, longitude);
+    this.renderMarker({map: this.map, latitude: latitude, longitude: longitude});
     this.fetchNearbyRestaurants(latitude, longitude);
   }
 
@@ -28,11 +29,13 @@ class App extends Component {
     this.map = map;
   }
 
-  renderMarker = (map, latitude, longitude) => {
+  renderMarker = (options) => {
+    let {map, latitude, longitude, icon} = options;
     let markerPosition = {lat: latitude, lng: longitude};
     new window.google.maps.Marker({
       position: markerPosition,
-      map: map
+      map: map,
+      icon: icon
     });
   }
 
@@ -62,7 +65,7 @@ class App extends Component {
 
   renderNearbyRestaurants = (locations) => {
     for(let location of locations) {
-      this.renderMarker(this.map, parseFloat(location.latitude), parseFloat(location.longitude));
+      this.renderMarker({map: this.map, latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude), icon: restaurantIcon});
     }
   }
 
@@ -82,7 +85,7 @@ class App extends Component {
       let latitude = place.geometry.location.lat();
       let longitude = place.geometry.location.lng();
       this.renderMap(latitude, longitude);
-      this.renderMarker(this.map, latitude, longitude);
+      this.renderMarker({map: this.map, latitude: latitude, longitude: longitude});
       this.fetchNearbyRestaurants(latitude, longitude);
       this.map.panTo(place.geometry.location);
       this.map.setZoom(16);
