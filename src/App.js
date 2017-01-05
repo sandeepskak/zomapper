@@ -11,6 +11,8 @@ class App extends Component {
     let latitude  = position.coords.latitude;
     let longitude = position.coords.longitude;
     this.renderMap(latitude, longitude);
+    this.renderMarker(this.map, latitude, longitude);
+    this.fetchNearbyRestaurants(latitude, longitude);
   }
 
   geolocationError = () => {
@@ -21,11 +23,9 @@ class App extends Component {
   renderMap = (latitude, longitude) => {
     let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: latitude, lng: longitude},
-      zoom: 15
+      zoom: 16
     });
     this.map = map;
-    this.renderMarker(map, latitude, longitude);
-    this.fetchNearbyRestaurants(latitude, longitude);
   }
 
   renderMarker = (map, latitude, longitude) => {
@@ -49,6 +49,7 @@ class App extends Component {
     .then(response => response.json())
     .then(data => {
       this.extractLocations(data.nearby_restaurants);
+      this.renderNearbyRestaurants(this.listOfLocations);
     })
   }
 
@@ -57,7 +58,6 @@ class App extends Component {
     for(let restaurant of restaurants) {
       this.listOfLocations.push(restaurant.restaurant.location);
     }
-    this.renderNearbyRestaurants(this.listOfLocations);
   }
 
   renderNearbyRestaurants = (locations) => {
@@ -82,8 +82,10 @@ class App extends Component {
       let latitude = place.geometry.location.lat();
       let longitude = place.geometry.location.lng();
       this.renderMap(latitude, longitude);
+      this.renderMarker(this.map, latitude, longitude);
+      this.fetchNearbyRestaurants(latitude, longitude);
       this.map.panTo(place.geometry.location);
-      this.map.setZoom(15);
+      this.map.setZoom(16);
     } else {
       document.getElementById('autocomplete').placeholder = 'Enter a city';
     }
