@@ -20,10 +20,11 @@ class App extends Component {
   renderMap = (latitude, longitude) => {
     let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: latitude, lng: longitude},
-      zoom: 16
+      zoom: 15
     });
     this.map = map;
     this.renderMarker(map, latitude, longitude);
+    this.fetchNearbyRestaurants(latitude, longitude);
   }
 
   renderMarker = (map, latitude, longitude) => {
@@ -33,13 +34,12 @@ class App extends Component {
       position: markerPosition,
       map: map
     });
-    this.fetchNearbyRestaurants(latitude, longitude);
   }
 
   fetchNearbyRestaurants = (latitude, longitude) => {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('user-key', 'bd751ce2eb11366569e9f266ffea7153');
+    headers.append('user-key', '57800fe3a17bc04ca2e40cfb5cf036fc');
     let options = {
       method: 'GET',
       headers: headers
