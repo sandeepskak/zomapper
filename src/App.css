@@ -25,6 +25,9 @@
 #map{
   height: 400px;
 }
+#autocomplete{
+  width: 50%;
+}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

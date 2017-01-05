@@ -13,8 +13,9 @@ class App extends Component {
     this.renderMap(latitude, longitude);
   }
 
-  geolocationError() {
+  geolocationError = () => {
     console.log('Unable to retrieve location');
+    this.initAutoComplete();
   }
 
   renderMap = (latitude, longitude) => {
@@ -28,7 +29,6 @@ class App extends Component {
   }
 
   renderMarker = (map, latitude, longitude) => {
-    console.log(map, latitude, longitude);
     let markerPosition = {lat: latitude, lng: longitude};
     new window.google.maps.Marker({
       position: markerPosition,
@@ -66,6 +66,29 @@ class App extends Component {
     }
   }
 
+  initAutoComplete = () => {
+    let countryRestrict = {'country': 'in'};
+    this.autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById('autocomplete'), {
+      types: ['(regions)'],
+      componentRestrictions: countryRestrict
+    });
+    this.autocomplete.addListener('place_changed', this.onPlaceChanged);
+  }
+
+  onPlaceChanged = () => {
+    let place = this.autocomplete.getPlace();
+    if (place && place.geometry) {
+      let latitude = place.geometry.location.lat();
+      let longitude = place.geometry.location.lng();
+      this.renderMap(latitude, longitude);
+      this.map.panTo(place.geometry.location);
+      this.map.setZoom(15);
+    } else {
+      document.getElementById('autocomplete').placeholder = 'Enter a city';
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -74,7 +97,9 @@ class App extends Component {
           <h2>Welcome to Mapper</h2>
         </div>
         <div className="map-container">
-          <p className="App-intro"></p>
+          <p className="App-intro">
+            <input id="autocomplete" placeholder="Enter a city" type="text" />
+          </p>
           <div id="map"></div>
         </div>
       </div>
