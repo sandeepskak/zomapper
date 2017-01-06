@@ -19,7 +19,6 @@ class App extends Component {
   }
 
   geolocationError = () => {
-    console.log('Unable to retrieve location');
     this.initAutoComplete();
   }
 
