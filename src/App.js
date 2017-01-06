@@ -114,7 +114,7 @@ class App extends Component {
   createInfoWindows = (markers, restautantDetails) => {
     markers.shift() //removes first element - the location marker of the user
     for (let [index, marker] of markers.entries()) {
-      let popupContent = '<div id="restaurantContent"><div>' + restautantDetails[index].name + '</div><div>' + restautantDetails[index].cuisines + '</div></div>';
+      let popupContent = window.Mustache.render("<div id='restaurantContent'><div>{{name}}</div><div>{{cuisines}}</div></div>", restautantDetails[index]);
       this.createInfoWindow(marker, popupContent);
     }
   }
