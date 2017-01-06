@@ -101,11 +101,13 @@ class App extends Component {
   }
 
   createInfoWindow = (marker, popupContent) => {
-    let infoWindow = new window.google.maps.InfoWindow({maxWidth: 400});
+    this.infoWindow = new window.google.maps.InfoWindow({maxWidth: 400});
     let map = this.map;
+    let that = this;
     window.google.maps.event.addListener(marker, 'click', function () {
-      infoWindow.setContent(popupContent);
-      infoWindow.open(map, marker);
+      if (that.infowindow) that.infowindow.close();
+      that.infoWindow.setContent(popupContent);
+      that.infoWindow.open(map, marker);
     });
   }
 
