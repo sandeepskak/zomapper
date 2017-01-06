@@ -14,6 +14,7 @@ class App extends Component {
     this.renderMap(latitude, longitude);
     this.renderMarker({map: this.map, latitude: latitude, longitude: longitude});
     this.fetchNearbyRestaurants(latitude, longitude);
+    this.initAutoComplete();
   }
 
   geolocationError = () => {
@@ -24,7 +25,7 @@ class App extends Component {
   renderMap = (latitude, longitude) => {
     let map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: latitude, lng: longitude},
-      zoom: 16
+      zoom: 14
     });
     this.map = map;
     this.markers = [];
@@ -93,7 +94,7 @@ class App extends Component {
       this.renderMarker({map: this.map, latitude: latitude, longitude: longitude});
       this.fetchNearbyRestaurants(latitude, longitude);
       this.map.panTo(place.geometry.location);
-      this.map.setZoom(16);
+      this.map.setZoom(14);
     } else {
       document.getElementById('autocomplete').placeholder = 'Enter a city';
     }
@@ -225,7 +226,7 @@ class App extends Component {
         </div>
         <div className="map-container">
           <p className="App-intro">
-            <input id="autocomplete" placeholder="Enter a city" type="text" />
+            <input className="form-control" id="autocomplete" placeholder="Enter a city or locality" type="text" />
           </p>
           <div id="map"></div>
         </div>

@@ -25,7 +25,7 @@
   height: 400px;
 }
 #autocomplete{
-  width: 50%;
+  width: 95%;
 }
 /*hide cross icon on infoWindow
 .gm-style-iw + div {display: none;}
@@ -45,9 +45,6 @@
 }
 .restaurant-details{
   text-align: left;
-}
-.restaurant-cuisine{
-
 }
 .restaurant-name{
   font-size: 24px;
@@ -140,6 +137,21 @@
 }
 .text-left{
   text-align: left;
+}
+.form-control{
+  display: block;
+  width: 100%;
+  padding: .5rem .75rem;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #55595c;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: .25rem;
+}
+.form-control:focus{
+  outline: none;
 }
 
 @keyframes App-logo-spin {
