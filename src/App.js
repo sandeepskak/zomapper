@@ -100,21 +100,93 @@ class App extends Component {
   }
 
   createInfoWindow = (marker, popupContent) => {
-    let infoWindow = new window.google.maps.InfoWindow();
+    let infoWindow = new window.google.maps.InfoWindow({maxWidth: 400});
     let map = this.map;
-    window.google.maps.event.addListener(marker, 'mouseover', function () {
+    window.google.maps.event.addListener(marker, 'click', function () {
       infoWindow.setContent(popupContent);
       infoWindow.open(map, marker);
-    });
-    window.google.maps.event.addListener(marker, 'mouseout', function () {
-      infoWindow.close();
     });
   }
 
   createInfoWindows = (markers, restautantDetails) => {
     markers.shift() //removes first element - the location marker of the user
     for (let [index, marker] of markers.entries()) {
-      let popupContent = window.Mustache.render("<div id='restaurantContent'><div>{{name}}</div><div>{{cuisines}}</div></div>", restautantDetails[index]);
+      let templateString = `<article id='restaurant-content'>
+                              <div class='container'>
+                                <div class='col-sm-4 align-left'>
+                                  <img class='featured-img inherit-display' src={{thumb}} />
+                                </div>
+                                <div class='col-sm-10 align-left ml-5'>
+                                  <div class='restaurant-details'>
+                                    <div class='col-sm-10 align-left ml-10'>
+                                      <div class='restaurant-name bold'>{{name}}</div>
+                                      <div class='restaurant-locality bold mt-5'>{{location.locality}}</div>
+                                      <div class='restaurant-address curtail grey mt-5'>{{location.address}}</div>
+                                    </div>
+                                    <div class='align-right'>
+                                      <div class='restaurant-rating bold' style='background-color: #{{user_rating.rating_color}};'>{{user_rating.aggregate_rating}}</div>
+                                      <div class='restaurant-votes mt-5'>{{user_rating.votes}} votes</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class='divider'></div>
+                              <div class='col-sm-12 text-left'>
+                                <div class='restaurant-cuisine mt-5'>
+                                  <span class='col-sm-4 grey'>Cuisines:</span>
+                                  <span class='col-sm-8 align-right'>{{cuisines}}</span>
+                                </div>
+                                <div class='restaurant-cost-for-two mt-5'>
+                                  <span class='col-sm-4 grey'>Cost for two:</span>
+                                  <span class='col-sm-8 align-right'>&#8377;{{average_cost_for_two}}</span>
+                                </div>
+                              </div>
+                              {{#show_order_url}}
+                                {{#book_url}}
+                                  <div class='col-sm-12 mt-25'>
+                                    <div class='col-sm-3-items menu-button align-left'>
+                                      <a target="_blank" href='{{menu_url}}' class='button'>Menu</a>
+                                    </div>
+                                    <div class='col-sm-3-items order-button align-left'>
+                                      <a target="_blank" href='{{order_url}}' class='button'>Order</a>
+                                    </div>
+                                    <div class='col-sm-3-items book-button align-left'>
+                                      <a target="_blank" href='{{book_url}}' class='button'>Book</a>
+                                    </div>
+                                  </div>
+                                {{/book_url}}
+                                {{^book_url}}
+                                  <div class='col-sm-12 mt-25'>
+                                    <div class='col-sm-2-items menu-button align-left'>
+                                      <a target="_blank" href='{{menu_url}}' class='button'>Menu</a>
+                                    </div>
+                                    <div class='col-sm-2-items order-button align-left'>
+                                      <a target="_blank" href='{{order_url}}' class='button'>Order</a>
+                                    </div>
+                                  </div>
+                                {{/book_url}}
+                              {{/show_order_url}}
+                              {{^show_order_url}}
+                                {{#book_url}}
+                                  <div class='col-sm-12 mt-25'>
+                                    <div class='col-sm-2-items menu-button align-left'>
+                                      <a target="_blank" href='{{menu_url}}' class='button'>Menu</a>
+                                    </div>
+                                    <div class='col-sm-2-items book-button align-left'>
+                                      <a target="_blank" href='{{book_url}}' class='button'>Book</a>
+                                    </div>
+                                  </div>
+                                {{/book_url}}
+                                {{^book_url}}
+                                  <div class='col-sm-12 mt-25'>
+                                    <div class='menu-button'>
+                                      <a target="_blank" href='{{menu_url}}' class='button'>Menu</a>
+                                    </div>
+                                  </div>
+                                {{/book_url}}
+                              {{/show_order_url}}
+                            </article>`;
+      let popupContent = window.Mustache.render(templateString, restautantDetails[index]);
       this.createInfoWindow(marker, popupContent);
     }
   }
@@ -125,7 +197,9 @@ class App extends Component {
         name, cuisines, has_online_delivery,
         is_delivering_now, has_table_booking,
         book_url, order_url,
-        price_range, user_rating
+        price_range, user_rating,
+        url, thumb, location, average_cost_for_two,
+        menu_url
       } = restaurant.restaurant;
       this.restautantDetails.push({
         name: name, cuisines: cuisines,
@@ -133,7 +207,11 @@ class App extends Component {
         is_delivering_now: is_delivering_now,
         has_table_booking: has_table_booking,
         book_url: book_url, order_url: order_url,
-        price_range: price_range, user_rating: user_rating
+        price_range: price_range, user_rating: user_rating,
+        url: url, thumb: thumb, location: location,
+        average_cost_for_two: average_cost_for_two,
+        show_order_url: (has_online_delivery && is_delivering_now),
+        menu_url: menu_url
       });
     }
   }
